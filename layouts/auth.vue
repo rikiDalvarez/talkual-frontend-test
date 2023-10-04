@@ -3,11 +3,7 @@
 </script>
 
 <template>
-  <div class="container">
+  <div class="container p-5">
     <slot />
   </div>
 </template>
-
-<style scoped lang="scss">
-@import url("~/assets/main.scss");
-</style>
