@@ -24,15 +24,15 @@ export default {
       })
         .then((response) => {
           if (!response.ok) {
-            // Handle the error case here, if needed
+            
             throw new Error('Network response was not ok');
           }
-          // Handle success, e.g., show a success message
+         
           console.log('Donation request was successful');
           this.closeModal();
         })
         .catch((error) => {
-          // Handle errors, e.g., show an error message
+          
           console.error('Donation request failed', error);
         });
       this.closeModal(); 
