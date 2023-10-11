@@ -2,13 +2,39 @@
 export default {
   props: {
     visible: Boolean, 
+		orderId: String,
   },
   methods: {
     closeModal() {
       this.$emit('close'); 
     },
     submitDonation() {
-      this.$emit('donation-complete'); 
+      
+      const donationData = {
+        postalCode: this.postalCode,
+        shipping_firstname: this.shipping_firstname,
+      };
+
+      fetch(`http://localhost:1337/api/orders/${this.orderId}/donate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(donationData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            // Handle the error case here, if needed
+            throw new Error('Network response was not ok');
+          }
+          // Handle success, e.g., show a success message
+          console.log('Donation request was successful');
+          this.closeModal();
+        })
+        .catch((error) => {
+          // Handle errors, e.g., show an error message
+          console.error('Donation request failed', error);
+        });
       this.closeModal(); 
     },
   },
@@ -20,7 +46,7 @@ export default {
     <div class="donate-form">
       <div class="header-donate">
         <h2>Donate Form</h2>
-        <button @click="closeModal">x</button>
+        <button class="x" @click="closeModal">x</button>
       </div>
       <form @submit="submitDonation">
 				<div class="postal-code-div">
@@ -44,7 +70,12 @@ export default {
 
 
 <style scoped>
-
+.x {
+	  background: none; 
+    border: none;     
+    padding: 0;      
+    cursor: pointer;        
+}
 .button-close {
 	color: white;
 	background-color: #72798d;

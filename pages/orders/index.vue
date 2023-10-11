@@ -15,11 +15,13 @@ const { data } = await find<OrderListResponse>('orders', {
 const orders = ref(data);
 const filterValue = ref('all')
 const showDonationModal = ref(false);
+const orderId = ref(null);
 
 console.log({orders})
 
 const openDonationModal = (order) => {
   showDonationModal.value = true;
+  console.log("order", order.id)
   console.log("showDonationModal",showDonationModal.value)
 }
 
@@ -58,6 +60,8 @@ console.log("filteredOrders",filteredOrders)
           <h3>sku: {{ order.attributes.order_items.data[0].attributes.sku }}</h3>
           <h3>quantity: {{ order.attributes.order_items.data[0].attributes.quantity }}</h3>
         </template>
+
+        <!-- TODO if type donation, button donate should disappear -->
         <h3>type: {{ order.attributes.type}}</h3>
         
         <template v-if="order.attributes.order_meta.data">
@@ -71,7 +75,7 @@ console.log("filteredOrders",filteredOrders)
     <div v-else>
       <p>No orders found.</p>
     </div>
-    <Donation :visible="showDonationModal" @close="closeDonationModal" @donation-complete="closeDonationModal" />
+    <Donation  :visible="showDonationModal" @close="closeDonationModal" @donation-complete="closeDonationModal" />
 
   </section>
 </template>
