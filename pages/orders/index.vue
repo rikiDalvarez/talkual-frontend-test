@@ -21,7 +21,7 @@ console.log({orders})
 
 const openDonationModal = (order) => {
   showDonationModal.value = true;
-  console.log("order", order.id)
+  orderId.value = order.id;
   console.log("showDonationModal",showDonationModal.value)
 }
 
@@ -75,7 +75,7 @@ console.log("filteredOrders",filteredOrders)
     <div v-else>
       <p>No orders found.</p>
     </div>
-    <Donation  :visible="showDonationModal" @close="closeDonationModal" @donation-complete="closeDonationModal" />
+    <Donation :orderId="orderId" :visible="showDonationModal" @close="closeDonationModal" @donation-complete="closeDonationModal" />
 
   </section>
 </template>

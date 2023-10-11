@@ -2,7 +2,7 @@
 export default {
   props: {
     visible: Boolean, 
-		orderId: String,
+		orderId: Number,
   },
   methods: {
     closeModal() {
@@ -11,14 +11,19 @@ export default {
     submitDonation() {
       
       const donationData = {
-        postalCode: this.postalCode,
+				order_meta:{
+        shipping_postcode: this.postalCode,
         shipping_firstname: this.shipping_firstname,
+				}
       };
 
+			const token = localStorage.getItem('strapi_jwt');
       fetch(`http://localhost:1337/api/orders/${this.orderId}/donate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+					'Key': 'application/json',
+					'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(donationData),
       })
@@ -76,6 +81,7 @@ export default {
     padding: 0;      
     cursor: pointer;        
 }
+
 .button-close {
 	color: white;
 	background-color: #72798d;
