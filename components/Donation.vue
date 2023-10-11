@@ -17,12 +17,28 @@ export default {
 				}
       };
 
-			const token = localStorage.getItem('strapi_jwt');
+			console.log( {donationData})
+				// utils.js
+					function getCookieValue(name) 
+				{
+					const regex = new RegExp(`(^| )${name}=([^;]+)`)
+					const match = document.cookie.match(regex)
+					if (match) {
+						return match[2]
+					}
+			}
+
+			const token = getCookieValue('strapi_jwt');
+
+
+			// const token = localStorage.getItem('strapi_jwt');
+
+			console.log({token})
+
       fetch(`http://localhost:1337/api/orders/${this.orderId}/donate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-					'Key': 'application/json',
 					'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(donationData),
@@ -63,8 +79,8 @@ export default {
 					</select>
 				</div>
 				<div class="shipping-firstname-div"> 
-					<label for="shipping_fistname">Firstname</label>
-					<input type="text" id="shipping_firstname" v-model="shipping_fistname" required>
+					<label for="shipping_firstname">Firstname</label>
+					<input type="text" id="shipping_firstname" v-model="shipping_firstname" required>
 				</div>
 				<button class="button-close" @click="closeModal"> close</button>
 				<button class="button-donate" type="submit">save changes</button>
