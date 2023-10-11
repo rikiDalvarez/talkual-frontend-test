@@ -14,8 +14,19 @@ const { data } = await find<OrderListResponse>('orders', {
 });
 const orders = ref(data);
 const filterValue = ref('all')
+const showDonationModal = ref(false);
 
 console.log({orders})
+
+const openDonationModal = (order) => {
+  showDonationModal.value = true;
+  console.log("showDonationModal",showDonationModal.value)
+}
+
+const closeDonationModal = () => {
+  showDonationModal.value = false;
+}
+
 const filteredOrders = computed(() => {
   if (filterValue.value === 'all') {
     return orders.value;
@@ -53,13 +64,15 @@ console.log("filteredOrders",filteredOrders)
           <h3>firstname: {{ order.attributes.order_meta.data.attributes.shipping_firstname }}</h3>
         </template>
         <div class="button-container">
-          <button class="button-donate">Donate</button>
+          <button class="button-donate"  @click="openDonationModal(order)">Donate</button>
         </div>
-        </div>
+      </div>
     </div>
     <div v-else>
       <p>No orders found.</p>
     </div>
+    <Donation :visible="showDonationModal" @close="closeDonationModal" @donation-complete="closeDonationModal" />
+
   </section>
 </template>
 
