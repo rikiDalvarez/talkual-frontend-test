@@ -67,7 +67,7 @@ console.log("filteredOrders",filteredOrders)
         <template v-if="order.attributes.order_meta.data">
           <h3>firstname: {{ order.attributes.order_meta.data.attributes.shipping_firstname }}</h3>
         </template>
-        <div class="button-container">
+        <div v-if="order.attributes.type !== 'donation'" class="button-container">
           <button class="button-donate"  @click="openDonationModal(order)">Donate</button>
         </div>
       </div>
