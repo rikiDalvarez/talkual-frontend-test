@@ -2,26 +2,23 @@
 definePageMeta({
   middleware: 'auth'
 });
-import type { OrderListResponse } from '~/types'
+import type { OrderListResponse, Order } from '~/types'
 import {computed} from 'vue';
 
 const { find } = useStrapi();
 
-const { data } = await find<OrderListResponse>('orders', {
+const { data }  = await find<OrderListResponse>('orders', {
   populate: ['order_items', 'order_meta'] ,
 });
 
 const orders = ref(data);
 const filterValue = ref('all')
 const showDonationModal = ref(false);
-const orderId = ref(null);
+const orderId = ref("");
 
-console.log({orders})
-
-const openDonationModal = (order) => {
+const openDonationModal = (order: Order) => {
   showDonationModal.value = true;
   orderId.value = order.id;
-  console.log("showDonationModal",showDonationModal.value)
 }
 
 const closeDonationModal = () => {
@@ -30,11 +27,11 @@ const closeDonationModal = () => {
 
 const handleDonationComplete = async () => {
   try {
-    const { data: updatedOrdersData } = await find<OrderListResponse>('orders', {
+    const { data } = await find<OrderListResponse>('orders', {
       populate: ['order_items', 'order_meta'],
     });
 
-    orders.value = updatedOrdersData;
+    orders.value = data;
     closeDonationModal();
   } catch (error) {
     console.error('Error updating orders', error);
@@ -45,6 +42,7 @@ const filteredOrders = computed(() => {
   if (filterValue.value === 'all') {
     return orders.value;
   }
+ 
 
   return orders.value.filter((order) => order.attributes.type === filterValue.value);
 });
@@ -63,19 +61,14 @@ console.log("filteredOrders",filteredOrders)
         <option value="donation">donation</option>
       </select>
     </div>
-
     <div v-if="filteredOrders.length > 0">
       <div v-for="order in filteredOrders" :key="order.id" class="order">
         <h3>{{ order.id }}</h3>
-        <!-- TODO nest skus -->
         <template v-if="order.attributes.order_items.data[0]">
           <h3>sku: {{ order.attributes.order_items.data[0].attributes.sku }}</h3>
           <h3>quantity: {{ order.attributes.order_items.data[0].attributes.quantity }}</h3>
         </template>
-
-        <!-- TODO if type donation, button donate should disappear -->
         <h3>type: {{ order.attributes.type}}</h3>
-        
         <template v-if="order.attributes.order_meta.data">
           <h3>firstname: {{ order.attributes.order_meta.data.attributes.shipping_firstname }}</h3>
         </template>

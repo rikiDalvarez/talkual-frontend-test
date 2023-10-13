@@ -17,23 +17,16 @@ export default {
 				}
       };
 
-			console.log( {donationData})
 				// utils.js
-					function getCookieValue(name) 
-				{
-					const regex = new RegExp(`(^| )${name}=([^;]+)`)
-					const match = document.cookie.match(regex)
-					if (match) {
-						return match[2]
-					}
+			function getCookieValue(name) {
+        const regex = new RegExp(`(^| )${name}=([^;]+)`)
+        const match = document.cookie.match(regex)
+        if (match) {
+          return match[2]
+        }
 			}
 
 			const token = getCookieValue('strapi_jwt');
-
-
-			// const token = localStorage.getItem('strapi_jwt');
-
-			console.log({token})
 
       fetch(`http://localhost:1337/api/orders/${this.orderId}/donate`, {
         method: 'POST',
