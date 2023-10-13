@@ -6,12 +6,11 @@ import type { OrderListResponse } from '~/types'
 import {computed} from 'vue';
 
 const { find } = useStrapi();
+
 const { data } = await find<OrderListResponse>('orders', {
   populate: ['order_items', 'order_meta'] ,
-  // filters: {
-  //   type: { $eq: 'normal' }
-  // }
 });
+
 const orders = ref(data);
 const filterValue = ref('all')
 const showDonationModal = ref(false);
@@ -28,6 +27,19 @@ const openDonationModal = (order) => {
 const closeDonationModal = () => {
   showDonationModal.value = false;
 }
+
+const handleDonationComplete = async () => {
+  try {
+    const { data: updatedOrdersData } = await find<OrderListResponse>('orders', {
+      populate: ['order_items', 'order_meta'],
+    });
+
+    orders.value = updatedOrdersData;
+    closeDonationModal();
+  } catch (error) {
+    console.error('Error updating orders', error);
+  }
+};
 
 const filteredOrders = computed(() => {
   if (filterValue.value === 'all') {
@@ -75,7 +87,7 @@ console.log("filteredOrders",filteredOrders)
     <div v-else>
       <p>No orders found.</p>
     </div>
-    <Donation :orderId="orderId" :visible="showDonationModal" @close="closeDonationModal" @donation-complete="closeDonationModal" />
+    <Donation :orderId="orderId" :visible="showDonationModal" @close="closeDonationModal" @donation-complete="handleDonationComplete" />
 
   </section>
 </template>

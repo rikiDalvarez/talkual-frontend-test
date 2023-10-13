@@ -50,6 +50,7 @@ export default {
           }
          
           console.log('Donation request was successful');
+          this.$emit('donation-complete');
           this.closeModal();
         })
         .catch((error) => {
