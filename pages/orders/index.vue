@@ -26,7 +26,7 @@ const closeDonationModal = () => {
   showDonationModal.value = false;
 }
 
-const updateFilter = (newFilterValue) => {
+const updateFilter = (newFilterValue: string) => {
   console.log(newFilterValue);
  filterValue.value = newFilterValue;
 }
@@ -60,19 +60,13 @@ const filteredOrders = computed(() => {
     <h1 class="text-center">Order List</h1>
     <div>
       <section class="p-3 order-list">
-        <div>
+        <div class="filter">
+          <h2>Filters</h2>
           <Filterbar :filterValue="filterValue" @update:filterValue="updateFilter"/>
         </div>
       </section>
     </div>
-    <!-- <div class="filter">
-      <h2>Filters</h2>
-      <select v-model="filterValue">
-        <option value="all">all</option>
-        <option value="normal">normal</option>
-        <option value="donation">donation</option>
-      </select>
-    </div> -->
+
     <div v-if="filteredOrders.length > 0">
       <div v-for="order in filteredOrders" :key="order.id" class="order">
         <h3>{{ order.id }}</h3>
