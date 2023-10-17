@@ -12,6 +12,8 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/strapi": "^1.9.3",
+    "@playwright/test": "^1.39.0",
+    "@types/node": "^20.8.6",
     "nuxt": "^3.7.4",
     "sass": "^1.68.0",
     "vue": "^3.3.4",
