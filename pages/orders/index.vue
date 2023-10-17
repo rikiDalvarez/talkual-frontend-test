@@ -15,7 +15,7 @@ const { data }  = await find<OrderListResponse>('orders', {
 const orders = ref(data);
 const filterValue = ref('all')
 const showDonationModal = ref(false);
-const orderId = ref("");
+const orderId = ref();
 
 const openDonationModal = (order: Order) => {
   showDonationModal.value = true;
@@ -39,6 +39,7 @@ const handleDonationComplete = async () => {
 
     orders.value = data;
     closeDonationModal();
+
   } catch (error) {
     console.error('Error updating orders', error);
   }
@@ -48,7 +49,6 @@ const filteredOrders = computed(() => {
   if (filterValue.value === 'all') {
     return orders.value;
   }
- 
 
   return orders.value.filter((order) => order.attributes.type === filterValue.value);
 });
@@ -66,22 +66,8 @@ const filteredOrders = computed(() => {
         </div>
       </section>
     </div>
-
     <div v-if="filteredOrders.length > 0">
-      <div v-for="order in filteredOrders" :key="order.id" class="order">
-        <h3>{{ order.id }}</h3>
-        <template v-if="order.attributes.order_items.data[0]">
-          <h3>sku: {{ order.attributes.order_items.data[0].attributes.sku }}</h3>
-          <h3>quantity: {{ order.attributes.order_items.data[0].attributes.quantity }}</h3>
-        </template>
-        <h3>type: {{ order.attributes.type}}</h3>
-        <template v-if="order.attributes.order_meta.data">
-          <h3>firstname: {{ order.attributes.order_meta.data.attributes.shipping_firstname }}</h3>
-        </template>
-        <div v-if="order.attributes.type !== 'donation' && order.attributes.status !== 'cancelled' " class="button-container">
-          <button class="button-donate"  @click="openDonationModal(order)">Donate</button>
-        </div>
-      </div>
+      <OrderItem v-for="order in filteredOrders" :key="order.id" :order="order" :showDonationModal="showDonationModal" :orderId="orderId" @update:showDonationModal="openDonationModal" />
     </div>
     <div v-else>
       <p>No orders found.</p>
