@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const { email, password, loginUser } = useStrapiLogin();
 const onSubmit = async () => {
   await loginUser()

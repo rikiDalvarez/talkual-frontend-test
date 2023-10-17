@@ -2,6 +2,7 @@
 definePageMeta({
   middleware: 'auth'
 });
+
 import type { OrderListResponse, Order } from '~/types'
 import {computed} from 'vue';
 
@@ -23,6 +24,11 @@ const openDonationModal = (order: Order) => {
 
 const closeDonationModal = () => {
   showDonationModal.value = false;
+}
+
+const updateFilter = (newFilterValue) => {
+  console.log(newFilterValue);
+ filterValue.value = newFilterValue;
 }
 
 const handleDonationComplete = async () => {
@@ -47,20 +53,26 @@ const filteredOrders = computed(() => {
   return orders.value.filter((order) => order.attributes.type === filterValue.value);
 });
 
-console.log("filteredOrders",filteredOrders)
 </script>
 
 <template>
   <section class="p-3 order-list">
     <h1 class="text-center">Order List</h1>
-    <div class="filter">
+    <div>
+      <section class="p-3 order-list">
+        <div>
+          <Filterbar :filterValue="filterValue" @update:filterValue="updateFilter"/>
+        </div>
+      </section>
+    </div>
+    <!-- <div class="filter">
       <h2>Filters</h2>
       <select v-model="filterValue">
         <option value="all">all</option>
         <option value="normal">normal</option>
         <option value="donation">donation</option>
       </select>
-    </div>
+    </div> -->
     <div v-if="filteredOrders.length > 0">
       <div v-for="order in filteredOrders" :key="order.id" class="order">
         <h3>{{ order.id }}</h3>
