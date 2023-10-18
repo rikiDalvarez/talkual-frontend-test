@@ -15,8 +15,8 @@ jobs:
 
     - name: Clone Backend Repository
       run: |
-        git clone https://github.com/rikiDalvarez/talkual-api-test.git backend
-      working-directory: ./backend
+        git clone https://github.com/rikiDalvarez/talkual-api-test.git 
+        cd talkual-api-test
 
     - name: Set up Node.js for Backend
       uses: actions/setup-node@v2
@@ -36,7 +36,7 @@ jobs:
         TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
 
       run: |
-        cd backend # Update working directory to 'backend'
+        cd talkual-api-test 
         echo "DATABASE_CLIENT=${DATABASE_CLIENT}" >> .env
         echo "DATABASE_FILENAME=${DATABASE_FILENAME}" >> .env 
         echo "PORT=${PORT}" >> .env
@@ -49,14 +49,13 @@ jobs:
 
     - name: Build and Start Backend Server
       run: |
-        cd backend
+        cd talkual-api-test 
         npm install
         npm run dev
         sleep 10
 
     - name: Wait for Backend to Be Ready
       run: |
-        cd backend
         sleep 10
 
     - name: Set up Node.js for Frontend
@@ -77,5 +76,4 @@ jobs:
 
     - name: Run E2E Tests for Frontend
       run: |
-        cd frontend # Update working directory to 'frontend'
         npx playwright test
