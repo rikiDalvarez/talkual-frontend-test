@@ -18,13 +18,13 @@ jobs:
         git clone https://github.com/rikiDalvarez/talkual-api-test.git backend
       working-directory: ./backend
 
-    - name: Set up Node.js
+    - name: Set up Node.js for Backend
       uses: actions/setup-node@v2
       with:
-        node-version: 14
+        node-version: 16
 
-    - name: Create .env file
-      env: 
+    - name: Create .env file for Backend
+      env:
         DATABASE_CLIENT: ${{ secrets.DATABASE_CLIENT }}
         DATABASE_FILENAME: ${{ secrets.DATABASE_FILENAME }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -34,12 +34,11 @@ jobs:
         API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
         ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
         TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
-        
 
       run: |
         cd backend # Update working directory to 'backend'
         echo "DATABASE_CLIENT=${DATABASE_CLIENT}" >> .env
-        echo "DATABASE_FILENAME=${DATABASE_FILENAME}" >> .env # Corrected variable name
+        echo "DATABASE_FILENAME=${DATABASE_FILENAME}" >> .env 
         echo "PORT=${PORT}" >> .env
         echo "HOST=${HOST}" >> .env
         echo "JWT_SECRET=${JWT_SECRET}" >> .env
@@ -47,21 +46,36 @@ jobs:
         echo "API_TOKEN_SALT=${API_TOKEN_SALT}" >> .env
         echo "ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}" >> .env
         echo "TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT}" >> .env
-        
 
     - name: Build and Start Backend Server
       run: |
-        cd backend 
-        npm install 
-        npm run dev &
-        sleep 10 
+        cd backend
+        npm install
+        npm run dev
+        sleep 10
 
     - name: Wait for Backend to Be Ready
       run: |
-        cd backend 
-        sleep 10 
+        cd backend
+        sleep 10
 
-    - name: Run E2E Tests
+    - name: Set up Node.js for Frontend
+      uses: actions/setup-node@v2
+      with:
+        node-version: 16
+
+    - name: Build and Start Frontend
       run: |
-        cd backend # Update working directory to 'backend'
+        npm install
+        npm run dev
+        sleep 10
+
+    # - name: Wait for Frontend to Be Ready
+    #   run: |
+    #     cd backend
+    #     sleep 10
+
+    - name: Run E2E Tests for Frontend
+      run: |
+        cd frontend # Update working directory to 'frontend'
         npx playwright test

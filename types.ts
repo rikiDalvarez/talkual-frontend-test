@@ -79,6 +79,8 @@ export interface OrderMetaResponse {
 }
 
 export interface Order {
+  [x: string]: any;
+  attributes: any;
   id: string;
   status: string;
   type: string;
