@@ -1,0 +1,67 @@
+name: E2E Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  e2e_tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Clone Backend Repository
+      run: |
+        git clone https://github.com/rikiDalvarez/talkual-api-test.git backend
+      working-directory: ./backend
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Create .env file
+      env: 
+        DATABASE_CLIENT: ${{ secrets.DATABASE_CLIENT }}
+        DATABASE_FILENAME: ${{ secrets.DATABASE_FILENAME }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        HOST: ${{ secrets.HOST }}
+        PORT: ${{ secrets.PORT }}
+        APP_KEYS: ${{ secrets.APP_KEYS }}
+        API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+        ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+        TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
+        
+
+      run: |
+        cd backend # Update working directory to 'backend'
+        echo "DATABASE_CLIENT=${DATABASE_CLIENT}" >> .env
+        echo "DATABASE_FILENAME=${DATABASE_FILENAME}" >> .env # Corrected variable name
+        echo "PORT=${PORT}" >> .env
+        echo "HOST=${HOST}" >> .env
+        echo "JWT_SECRET=${JWT_SECRET}" >> .env
+        echo "APP_KEYS=${APP_KEYS}" >> .env
+        echo "API_TOKEN_SALT=${API_TOKEN_SALT}" >> .env
+        echo "ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}" >> .env
+        echo "TRANSFER_TOKEN_SALT=${TRANSFER_TOKEN_SALT}" >> .env
+        
+
+    - name: Build and Start Backend Server
+      run: |
+        cd backend 
+        npm install 
+        npm run dev &
+        sleep 10 
+
+    - name: Wait for Backend to Be Ready
+      run: |
+        cd backend 
+        sleep 10 
+
+    - name: Run E2E Tests
+      run: |
+        cd backend # Update working directory to 'backend'
+        npx playwright test
